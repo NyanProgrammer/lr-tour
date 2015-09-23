@@ -1,0 +1,74 @@
+﻿{% extends "app/layout.html" %}
+
+{% block stylePersonalizado %}
+<style>
+      html, body {
+        height: 100%;
+        margin: 2%;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+        width: 80%;
+      }
+    </style>
+{% endblock %}
+{% block content %}
+     <div class="row">
+         <div class="col-md-4">
+    <h1>Editar lugar</h1>
+    <form method="POST" class="form-horizontal">
+    {% csrf_token %}
+        {{form}} 
+        <div class="row col-lg-offset-0">
+        <label for="id_Latitud">Latitud:
+        <input type="text" id="id_Latitud" name="id_Latitud" class="form-control" maxlength="45" size="40"></label>
+        </div>
+        <div class="row col-lg-offset-0">
+        <label for="id_Latitud">Longitud:
+        <input type="text" id="id_Longitud" name="id_Longitud" class="form-control" maxlength="45" size="40"></label>
+         </div>
+        <hr>
+        <button type="submit" class="save btn btn-default">Guardar cambios</button>
+    </form>
+         </div>
+    <div class="col-md-8">
+        <div id="map"></div>
+         </div>
+    </div>
+
+        <script>
+
+var map;
+function initMap() {
+    var infowindow = new google.maps.InfoWindow();
+    formDeLatitud = document.getElementById('id_Latitud');
+    formDeLongitud = document.getElementById('id_Longitud');
+  map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: -33.439020, lng: -70.671035 },
+    zoom: 12
+  });
+  map.addListener('click', function (event) { addMarker(event.latLng, infowindow); });
+}
+
+function addMarker(location, infowindow) {
+    var marker = new google.maps.Marker({position: location,map: map});
+    var info = "Latitud :" + location.lat() + " , " + "Longitud :" + location.lng();
+    marker.addListener('click', function () {
+        infowindow.setContent(info);
+        infowindow.open(map, marker);
+    });
+    marker.addListener('dblclick', function () {
+        formDeLatitud.value = location.lat();
+        formDeLongitud.value = location.lng();
+    });
+    marker.addListener('rightclick', function () {
+        marker.setMap(null);
+    });
+}
+
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNzEGo5ZvqCqptLOd1b144begxyBvcpjU&callback=initMap"
+        async defer></script>
+{% endblock %}

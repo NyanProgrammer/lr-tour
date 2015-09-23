@@ -1,0 +1,24 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+    {% for lu in Lugares %}
+        <div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title">
+                            <a href="{% url 'lug_detail' pk=lu.pk %}">{{ lu.nombre }}</a>
+                        </h1>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-left">{{ lu.Informacion|linebreaks }}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <small>Region : {{ lu.Region }}</small> 
+                    </div>
+                </div>
+            </div>     
+        </div>
+    {% endfor %}
+
+{% endblock %}

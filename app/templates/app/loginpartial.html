@@ -1,0 +1,48 @@
+{% if user.is_authenticated %}
+<form id="logoutForm" action="/logout" method="post" class="navbar-right">
+    {% csrf_token %}
+        <ul class="nav navbar-nav">
+            
+        <li class="dropdown">
+        <a id="dLabel" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Publicaciones
+        <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="drop3">
+            <li><a href="{% url 'pub_all' %}">Ver Publicaciones</a></li>
+            <li><a href="{% url 'mis_pub' %}">Mis Publicaciones</a></li>
+            <li><a href="{% url 'pub_new' %}">Crear Publicacion</a></li>
+        </ul>
+    </li>
+                  
+    <li class="dropdown">
+        <a id="dLabel" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Lugares
+        <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dLabel">
+            <li><a href="{% url 'lug_all' %}">Ver Lugares</a></li>
+            <li><a href="{% url 'lug_new' %}">Crear Lugares</a></li>           
+        </ul>
+    </li>
+    </ul>
+            
+        
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="{% url 'misrutas' %}">Mis Rutas</a></li>
+        <li><a href="{% url 'editarUsuario' %}">{{ user.username }}</a></li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+    </ul>
+    
+        
+    
+
+</form>
+
+{% else %}
+
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="{% url 'login' %}">Log in</a></li>
+</ul>
+
+{% endif %}

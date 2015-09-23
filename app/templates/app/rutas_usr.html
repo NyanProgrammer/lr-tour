@@ -1,0 +1,32 @@
+﻿﻿﻿{% extends "app/layout.html" %}
+{% block content %}
+        <form action="." method="post">
+ <div class="container">
+    <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Rutas</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% csrf_token %}
+        {% for ruta in ListaDeRutas %}
+            <tr>
+                <td>{{ ruta.nombre }}</td>
+                <td><button type="submit" class="btn btn-primary" value="{{ruta.id}}" name="botonDeEdicionDeRuta">Editar</button></td>
+                <td><button type="submit" class="btn btn-primary" value="{{ruta.id}}" name="botonDeEliminacionDeRuta">Borrar</button></td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+  </table> 
+</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+    <button type="submit" class="btn btn-primary" name="botonDeNuevaRuta">Crear Nueva Ruta</button>
+            </div>
+            </div>
+    </div>  
+</form>
+{% endblock content %}

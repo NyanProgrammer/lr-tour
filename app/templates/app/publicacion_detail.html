@@ -1,0 +1,94 @@
+﻿{% extends "app/layout.html" %}
+{% block stylePersonalizado %}
+<style>
+      html, body {
+        height: 100%;
+        margin: 2%;
+        padding: 0;
+      }
+      #map {
+        height: 70%;
+        width: 100%;
+      }
+    </style>
+{% endblock %}
+
+    {% block content %}
+       <div class="row">
+           <div class="col-md-7">
+        <div class="text-center">
+                
+                   <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                            <h1 class="modal-title">
+                                 {{ pub.titulo }}
+                            </h1>
+                        </div>
+                        <div class="modal-body">
+                            <p>{{ pub.Informacion|linebreaks }}</p>
+                        </div>
+                        <div class="modal-footer">
+                            {% if pub.FechaPublicacion %}
+                                <div class="date">
+                                    {{ pub.FechaPublicacion }}
+                                </div>
+                            {% endif %}
+                            <form action="." method="post">
+                                {% if user.is_authenticated and pub.ID_usuario == user%}
+                                {% csrf_token %}
+                                <input type="hidden" value="{{pub.ID_Lugar.Latitud}}" id="latitud" />
+                                <input type="hidden" value="{{pub.ID_Lugar.Longitud}}" id="longitud" />
+                                 <button type="submit" class="btn btn-primary" value="{{pub.pk}}" name="PublicarP" >Publicar</button>
+                                 <a class="btn btn-default" href="{% url "pub_edit" pk=pub.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>  
+                                {% endif%}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+             <div class="col-md-5">
+                <div id="map"></div>
+            </div>
+            </div>
+             
+                   <form method="POST" class="form-horizontal">
+                                {% csrf_token %}
+                                <div class="col-xs-9">
+                                    {% csrf_token %}
+                                    {{form}}    
+                                    <button type="submit" class="save btn btn-default">Save</button>
+                                </div>
+                        </form>
+                </div>  
+       </div>
+             
+
+{% for com in coms %}
+    <dl class="dl-horizontal">
+        <dt>{{com.ID_usuario.username}}</dt>
+        <dd>{{ com.Respuesta }}</dd>
+    </dl>
+                           
+{% empty %}
+    <h2>No hay comentarios en esta Publicación </h2>
+{% endfor %}
+
+
+  <script>
+
+var map;
+function initMap() {
+    var lat = document.getElementById("latitud");
+    var long = document.getElementById("longitud");
+  map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: parseFloat(lat.value), lng: parseFloat(long.value) },
+    zoom: 17
+  });
+  var marcadorDePosicion = new google.maps.Marker({ position: { lat: parseFloat(lat.value), lng: parseFloat(long.value) }, map: map });
+}
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNzEGo5ZvqCqptLOd1b144begxyBvcpjU&callback=initMap"
+        async defer></script>
+
+    {% endblock %}

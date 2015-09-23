@@ -1,0 +1,67 @@
+﻿{% extends "app/layout.html" %}
+{% block stylePersonalizado %}
+<style>
+      html, body {
+        height: 100%;
+        margin: 2%;
+        padding: 0;
+      }
+      #map {
+        height: 70%;
+        width: 100%;
+      }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-7">
+<div class="text-left">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">
+                    {{ lug.nombre }}        
+                </h1>
+            </div>
+            <div class="modal-body">
+                <p>{{ lug.Informacion|linebreaks }}</p>              
+            </div>
+            <div class="modal-footer">
+                <h5>Region: {{ lug.Region }}</h5>
+                <h5>Ciudad: {{ lug.Ciudad }}</h5>
+                <h5>Comuna: {{ lug.Comuna }}</h5>
+                <input type="hidden" value="{{lug.Latitud}}" id="latitud" />
+                <input type="hidden" value="{{lug.Longitud}}" id="longitud" />
+            </div>
+            <div class="modal-footer">
+                {% if user.is_authenticated %}
+                    <a class="btn btn-default" href="{% url "lug_edit" pk=lug.pk %}"><span class="glyphicon glyphicon-pencil"></span>Editar lugar</a>
+                {% endif%}
+            </div>
+        </div>
+    </div>       
+</div>
+</div>
+    <div class="col-md-5">
+        <div id="map"></div>
+    </div>
+</div>
+  <script>
+
+var map;
+function initMap() {
+    var lat = document.getElementById("latitud");
+    var long = document.getElementById("longitud");
+    var infowindow = new google.maps.InfoWindow();
+  map = new google.maps.Map(document.getElementById('map'), {
+      center: { lat: parseFloat(lat.value), lng: parseFloat(long.value) },
+    zoom: 17
+  });
+  var marcadorDePosicion = new google.maps.Marker({ position: { lat: parseFloat(lat.value), lng: parseFloat(long.value) }, map: map });
+}
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNzEGo5ZvqCqptLOd1b144begxyBvcpjU&callback=initMap"
+        async defer></script>
+{% endblock %}

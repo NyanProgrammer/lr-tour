@@ -1,0 +1,51 @@
+﻿﻿﻿{% extends "app/layout.html" %}
+{% block content %}
+    <form action="." method="post">
+    {% csrf_token %}
+   <div class="container">
+    <div class="row">
+             <div class="col-lg-4">
+             <div class="form-group">
+             <label>Username:</label>
+             <input type="text" value="{{usuario.username}}" name="username" class="form-control"/>
+             </div>
+             </div>
+    </div>
+    <div class="row">
+             <div class="col-lg-4">
+             <div class="form-group">
+             <label>Password (Solo cambiar o rellenar este campo si desea modificarla, la actual no es mostrada por razones de seguridad):</label>
+             <input type="text" value="Minimo 4 caracteres" name="password" class="form-control"/>
+             </div>
+             </div>
+    </div>
+    <div class="row">
+             <div class="col-lg-4">
+             <div class="form-group">
+             <label>Email:</label>
+             <input type="text" value="{{usuario.email}}" name="email" class="form-control"/>
+             </div>
+             </div>
+    </div>
+    <div class="row">
+             <div class="col-lg-4">
+             <div class="form-group">
+             <label>Nombre:</label>
+             <input type="text" value="{{usuario.first_name}}" name="first_name" class="form-control"/>
+             </div>
+             </div>
+    </div>
+    <div class="row">
+             <div class="col-lg-4">
+             <div class="form-group">
+             <label>Apellido:</label>
+             <input type="text" value="{{usuario.last_name}}" name="last_name" class="form-control"/>
+             </div>
+             </div>
+    </div>
+    <div class="row">
+    <button type="submit" class="btn btn-primary" id="botonDeModificarInfo">Guardar Cambios</button>
+    </div>
+ </div>
+ </form>
+{% endblock content %}

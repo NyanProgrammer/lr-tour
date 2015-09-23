@@ -1,0 +1,192 @@
+﻿{% extends "app/layout.html" %}
+{% block stylePersonalizado %}
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Waypoints in directions</title>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 2%;
+        padding: 0;
+      }
+       #map {
+        height: 100%;
+        width: 60%;
+      }
+    </style>
+{% endblock %}
+{% block content %}
+<div id="map" style="float:right;"></div>
+    <b>Punto de Inicio:</b>
+    <select id="start">
+                    <option value="{{primerLugarDeLaRuta.Latitud}},{{primerLugarDeLaRuta.Longitud}},{{primerLugarDeLaRuta.nombre}},{{primerLugarDeLaRuta.id}}">{{primerLugarDeLaRuta.nombre}}</option>
+                            {% for lugar in lugares %}
+                            {% ifnotequal primerLugarDeLaRuta.nombre lugar.nombre %}
+                            <option value="{{lugar.Latitud}},{{lugar.Longitud}},{{lugar.nombre}},{{lugar.id}}">{{lugar.nombre}}</option>
+                            {% endifnotequal %}
+                            {% endfor %}
+    </select>
+    <hr>
+    <b>Puntos Intermedios:</b> <br>
+    <select id="lugaresGenerales" size="5"  style="width: 300px">
+                                      {% if listaDeIntermedios|length == 0 %}
+                                     {% for lugar in lugares %}
+                                    <option value="{{lugar.Latitud}},{{lugar.Longitud}},{{lugar.nombre}},{{lugar.id}}">{{lugar.nombre}}</option>
+                                    {% endfor %}
+
+                                    {% elif listaDeIntermedios|length != 0 %}
+                                {% for lugarDeListaGeneral in lugares %}
+                                {% if not lugarDeListaGeneral in listaDeIntermedios %}
+                                <option value="{{lugarDeListaGeneral.Latitud}},{{lugarDeListaGeneral.Longitud}},{{lugarDeListaGeneral.nombre}},{{lugarDeListaGeneral.id}}">{{lugarDeListaGeneral.nombre}}</option>
+                            {% endif %}
+                        {% endfor %}
+                        {% endif %}
+    </select>
+    <hr>
+   
+    <button type="submit" id="alugaresDeRuta">Mandar a lugares de Ruta</button>
+    <hr>
+    
+    
+    <button type="submit" id="devolverALugaresGenerales">Devolver a lugares Generales</button>
+    <hr>
+   
+    <b>Puntos Agregados:</b> <br>
+    <select id="lugaresDeLaRuta" size="5"  style="width: 300px">
+          {% if listaDeIntermedios|length != 0 %}
+          {% for lugar in listaDeIntermedios %}
+              <option value="{{lugar.Latitud}},{{lugar.Longitud}},{{lugar.nombre}},{{lugar.id}}">{{lugar.nombre}}</option>
+          {% endfor %}
+      {% endif %}
+    </select>
+    <hr>
+    
+
+    <b>Punto Final:</b>
+    <select id="end">
+                      <option value="{{ultimoLugarDeLaRuta.Latitud}},{{ultimoLugarDeLaRuta.Longitud}},{{ultimoLugarDeLaRuta.nombre}},{{ultimoLugarDeLaRuta.id}}">{{ultimoLugarDeLaRuta.nombre}}</option>
+                      {% for lugar in lugares %}
+                      {% ifnotequal ultimoLugarDeLaRuta.nombre lugar.nombre %}
+                      <option value="{{lugar.Latitud}},{{lugar.Longitud}},{{lugar.nombre}},{{lugar.id}}">{{lugar.nombre}}</option>
+                      {% endifnotequal %}
+                      {% endfor %}
+    </select>
+    
+      <input type="submit" id="submit">
+       <form action="." method="post">
+           <hr>
+       {% csrf_token %}
+      <input type="text" name="nombreRuta" value="{{nombreDeLaRuta}}">
+      <button type="submit" id="guardarRuta" name="guardarRuta" value="">Guardar Ruta</button>
+           </form>
+    <div class="checkbox">
+    <label>
+        <input type="checkbox" id="opcionDeOptimizacion"> Optimizar Ruta
+    </label>
+        <input type="hidden" value="{{idDeRuta}}" id="inputEncargadoDeEntregarIdDeRuta" name="inputEncargadoDeEntregarIdDeRuta">
+    </div>
+   
+    <script>
+function initMap() {
+  var directionsService = new google.maps.DirectionsService;
+  var directionsDisplay = new google.maps.DirectionsRenderer;
+  var optimizacion = new opcionDeOptimizacionElegidaPorElUsuario(false);
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 10,
+    center: {lat: -33.439020, lng: -70.671035} 
+  });
+  directionsDisplay.setMap(map);
+
+  document.getElementById('submit').addEventListener('click', function() {
+      calculateAndDisplayRoute(directionsService, directionsDisplay, optimizacion);
+  });
+
+  document.getElementById('alugaresDeRuta').addEventListener('click', mandarARuta);
+  document.getElementById('devolverALugaresGenerales').addEventListener('click', devolverALugaresGenerales);
+  document.getElementById('opcionDeOptimizacion').addEventListener('click', function () { optimizarRuta(optimizacion); });
+}
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay, optimizacion) {
+    var waypts = [];
+    botonGuardarRuta = document.getElementById('guardarRuta');
+    botonGuardarRuta.value = "";
+    botonGuardarRuta.value = document.getElementById('inputEncargadoDeEntregarIdDeRuta').value;
+    botonGuardarRuta.value += '/' + document.getElementById('start').value;
+    botonGuardarRuta.value += '/' + document.getElementById('end').value;
+    var checkboxArray = document.getElementById('lugaresDeLaRuta');
+    contadorDePuntosIntermedios = 0
+    for (var i = 0; i < checkboxArray.length; i++) {
+            contadorDePuntosIntermedios += 1 
+            botonGuardarRuta.value += '/' + checkboxArray[i].value;
+            var coorDelLugar = (checkboxArray[i].value).split(',');
+            waypts.push({
+                location: { lat: parseFloat(coorDelLugar[0]), lng: parseFloat(coorDelLugar[1]) },
+                stopover: true
+            });   
+    }
+  botonGuardarRuta.value += '/' + contadorDePuntosIntermedios
+  var coorDelOrigen = (document.getElementById('start').value).split(',');
+  var coorDelDestino = (document.getElementById('end').value).split(',');
+  directionsService.route({
+    origin: { lat: parseFloat(coorDelOrigen[0]), lng: parseFloat(coorDelOrigen[1]) },
+    destination: { lat: parseFloat(coorDelDestino[0]), lng: parseFloat(coorDelDestino[1]) },
+    waypoints: waypts,
+    optimizeWaypoints: optimizacion.eleccion,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(response, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+    }
+    else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
+
+function mandarARuta() {
+
+    var opcionesDeLugaresGenerales = document.getElementById('lugaresGenerales');
+    var opcionesDeLugaresDeLaRuta = document.getElementById('lugaresDeLaRuta');
+
+    for (var i = 0, length = opcionesDeLugaresGenerales.length; i < length; i++) {
+        if (opcionesDeLugaresGenerales[i].selected) {
+            opcionesDeLugaresDeLaRuta[opcionesDeLugaresDeLaRuta.length] = opcionesDeLugaresGenerales[i];
+        }
+    }
+
+}
+
+function devolverALugaresGenerales() {
+
+    var opcionesDeLugaresGenerales = document.getElementById('lugaresGenerales');
+    var opcionesDeLugaresDeLaRuta = document.getElementById('lugaresDeLaRuta');
+
+    for (var i = 0, length = opcionesDeLugaresDeLaRuta.length; i < length; i++) {
+        if (opcionesDeLugaresDeLaRuta[i].selected) {
+            opcionesDeLugaresGenerales[opcionesDeLugaresGenerales.length] = opcionesDeLugaresDeLaRuta[i];
+        }
+    }
+
+}
+
+function optimizarRuta(optimizacion) {
+    if (optimizacion.eleccion == true) {
+        optimizacion.eleccion = false;
+    }
+    else {
+        optimizacion.eleccion = true;
+    }
+}
+
+function opcionDeOptimizacionElegidaPorElUsuario(eleccion) {
+    this.eleccion = eleccion;
+}
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNzEGo5ZvqCqptLOd1b144begxyBvcpjU&callback=initMap"
+        async defer></script>
+
+{% endblock %}

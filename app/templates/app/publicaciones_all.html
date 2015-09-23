@@ -1,0 +1,11 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+        {% for pub in pubs %}
+        <div>
+            <h1><a href="{% url 'pub_detail' pk=pub.pk %}">{{ pub.titulo }}</a></h1>
+            <p class="text-left">{{ pub.Informacion|linebreaks }}</p>
+            <small>publicado : {{ pub.FechaPublicacion }} @utor : {{pub.ID_usuario.username}}</small>
+        </div>
+    {% endfor %}
+{% endblock %}
