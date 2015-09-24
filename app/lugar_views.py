@@ -12,6 +12,10 @@ from django.http import HttpResponseRedirect
 
 from app.lugar_forms import *
 
+from app.models import Comentario_Base
+from app.models import Comentario_Lugar
+
+from app.comentario_form import comentarioLugarForm
 
 def lugar_new(request):
     if request.method == "POST":
@@ -56,10 +60,20 @@ def lugar_all(request):
 
 def lugar_detail(request,pk):
     lug = get_object_or_404(Lugar,pk = pk)
-    ##if 'PublicarP' in request.POST:
-      #  print('NYAN NYAN')
-       # pub.publicar()
-        #pub.save()
+    com = Comentario_Lugar.objects.filter(ID_Lugar = lug)
+   #Sentencia de control segura
+   #Evita errores de ecritura en BD
+    if request.method == "POST":
+        form = comentarioLugarForm(request.POST)
+        if form.is_valid():
+            com_o = form.save(commit = False)
+            com_o.ID_Lugar = lug
+            com_o.ID_usuario = request.user
+            com_o.Fecha_publicacion = datetime.now()
+            com_o.save()
+            return redirect('lug_detail',pk=lug.pk) 
+    else:
+        form = comentarioLugarForm()
 
     return render(
         request,
@@ -69,6 +83,8 @@ def lugar_detail(request,pk):
             'title' :lug.nombre,
             'year' : datetime.now().year,
             'lug' : lug,
+            'coms' : com,
+            'form' :form,
         })
     )
 
