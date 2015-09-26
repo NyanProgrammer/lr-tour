@@ -20,13 +20,3 @@ class comentarioPublicacionForm(forms.ModelForm):
         widgets = {
             'Respuesta' : Textarea(attrs = { 'class' : 'form-control input-lg' , 'rows': '2' }),
         }
-
-class comentarioLugarForm(forms.ModelForm):
-
-    class Meta:
-
-        model = Comentario_Lugar
-        fields = ('Respuesta',)
-        widgets = {
-            'Respuesta' : Textarea(attrs = { 'class' : 'form-control input-lg' , 'rows': '2' }),
-        }

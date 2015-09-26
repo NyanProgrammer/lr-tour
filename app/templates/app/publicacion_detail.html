@@ -50,32 +50,33 @@
             </div>
              
                    
-                </div> 
-            <div class="col-md-5">
+                </div>  
+           <div class="col-md-5">
                 <div id="map"></div>
-            </div> 
+            </div>
+
        </div>
+             
+      <form method="POST" class="form-horizontal">
+                {% csrf_token %}
+                <div class="col-xs-9">
+                    {% csrf_token %}
+                     {{form}}    
+                     <button type="submit" class="save btn btn-default">Save</button>
+                </div>
+       </form>
 
-<form method="POST" class="form-horizontal">
-    {% csrf_token %}
-    <div class="col-xs-9">
-        {% csrf_token %}
-        {{form}}    
-        <button type="submit" class="save btn btn-default">Save</button>
-    </div>
-</form>
-
-
-{% for com in coms %}
+<div class="row">
+    {% for com in coms %}
     <dl class="dl-horizontal">
         <dt>{{com.ID_usuario.username}}</dt>
         <dd>{{ com.Respuesta }}</dd>
     </dl>
                            
-{% empty %}
+    {% empty %}
     <h2>No hay comentarios en esta Publicación </h2>
-{% endfor %}
-
+    {% endfor %}
+</div>
 
   <script>
 

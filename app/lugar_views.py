@@ -12,10 +12,6 @@ from django.http import HttpResponseRedirect
 
 from app.lugar_forms import *
 
-from app.models import Comentario_Base
-from app.models import Comentario_Lugar
-
-from app.comentario_form import comentarioLugarForm
 
 def lugar_new(request):
     if request.method == "POST":
@@ -27,13 +23,13 @@ def lugar_new(request):
             lug.Latitud = latitud
             lug.Longitud = longitud
             lug.save()
-            # return HttpResponseRedirect('/lug/ALL/') Arreglar
+            return HttpResponseRedirect('/lug/all/')
     else:
         form = LugarForm()
 
     return render(
         request,
-        'app/lugar_edit.html',
+        'app/lugar_new.html',
         context_instance = RequestContext(request,
         {
             'title' :'Nuevo Lugar',
@@ -60,20 +56,10 @@ def lugar_all(request):
 
 def lugar_detail(request,pk):
     lug = get_object_or_404(Lugar,pk = pk)
-    com = Comentario_Lugar.objects.filter(ID_Lugar = lug)
-   #Sentencia de control segura
-   #Evita errores de ecritura en BD
-    if request.method == "POST":
-        form = comentarioLugarForm(request.POST)
-        if form.is_valid():
-            com_o = form.save(commit = False)
-            com_o.ID_Lugar = lug
-            com_o.ID_usuario = request.user
-            com_o.Fecha_publicacion = datetime.now()
-            com_o.save()
-            return redirect('lug_detail',pk=lug.pk) 
-    else:
-        form = comentarioLugarForm()
+    ##if 'PublicarP' in request.POST:
+      #  print('NYAN NYAN')
+       # pub.publicar()
+        #pub.save()
 
     return render(
         request,
@@ -83,8 +69,6 @@ def lugar_detail(request,pk):
             'title' :lug.nombre,
             'year' : datetime.now().year,
             'lug' : lug,
-            'coms' : com,
-            'form' :form,
         })
     )
 

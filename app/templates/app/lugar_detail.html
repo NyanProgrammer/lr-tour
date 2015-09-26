@@ -16,58 +16,37 @@
 {% block content %}
 <div class="row">
     <div class="col-md-7">
-        <div class="text-left">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title">
-                        {{ lug.nombre }}        
-                        </h1>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{ lug.Informacion|linebreaks }}</p>              
-                    </div>
-                    <div class="modal-footer">
-                        <h5>Region: {{ lug.Region }}</h5>
-                        <h5>Ciudad: {{ lug.Ciudad }}</h5>
-                        <h5>Comuna: {{ lug.Comuna }}</h5>
-                        <input type="hidden" value="{{lug.Latitud}}" id="latitud" />
-                        <input type="hidden" value="{{lug.Longitud}}" id="longitud" />
-                    </div>
-                    <div class="modal-footer">
-                    {% if user.is_authenticated %}
-                        <a class="btn btn-default" href="{% url "lug_edit" pk=lug.pk %}"><span class="glyphicon glyphicon-pencil"></span>Editar lugar</a>
-                    {% endif%}
-                    </div>
-                </div>
+<div class="text-left">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">
+                    {{ lug.nombre }}        
+                </h1>
+            </div>
+            <div class="modal-body">
+                <p>{{ lug.Informacion|linebreaks }}</p>              
+            </div>
+            <div class="modal-footer">
+                <h5>Region: {{ lug.Region }}</h5>
+                <h5>Ciudad: {{ lug.Ciudad }}</h5>
+                <h5>Comuna: {{ lug.Comuna }}</h5>
+                <input type="hidden" value="{{lug.Latitud}}" id="latitud" />
+                <input type="hidden" value="{{lug.Longitud}}" id="longitud" />
+            </div>
+            <div class="modal-footer">
+                {% if user.is_authenticated %}
+                    <a class="btn btn-default" href="{% url "lug_edit" pk=lug.pk %}"><span class="glyphicon glyphicon-pencil"></span>Editar lugar</a>
+                {% endif%}
             </div>
         </div>
-    </div>
+    </div>       
+</div>
+</div>
     <div class="col-md-5">
         <div id="map"></div>
     </div>
 </div>
-
-<form method="POST" class="form-horizontal">
-    {% csrf_token %}
-    <div class="col-xs-9">
-        {% csrf_token %}
-        {{form}}    
-        <button type="submit" class="save btn btn-default">Save</button>
-    </div>
-</form>
-
-
-{% for com in coms %}
-<dl class="dl-horizontal">
-    <dt>{{com.ID_usuario.username}}</dt>
-    <dd>{{ com.Respuesta }}</dd>
-</dl>
-                           
-{% empty %}
-    <h2>No hay comentarios en esta Publicación </h2>
-{% endfor %}
-
   <script>
 
 var map;

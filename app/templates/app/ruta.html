@@ -60,7 +60,7 @@
            <hr>
        {% csrf_token %}
       <input type="text" name="nombreRuta" value="">
-      <button type="submit" id="guardarRuta" name="guardarRuta" value="">Guardar Ruta</button>
+      <button type="button" id="guardarRuta" name="guardarRutaTodaviaNo" value="">Guardar Ruta</button>
            </form>
     <div class="checkbox">
     <label>
@@ -82,6 +82,14 @@ function initMap() {
       calculateAndDisplayRoute(directionsService, directionsDisplay, optimizacion);
   });
   document.getElementById('alugaresDeRuta').addEventListener('click', mandarARuta);
+  document.getElementById("guardarRuta").addEventListener('click', function () {
+      if (document.getElementById("guardarRuta").name == "guardarRutaTodaviaNo") {
+          alert("Por favor, antes de guardar envie su ruta!");
+      }
+      else if (document.getElementById("guardarRuta").name == "guardarRuta") {
+          document.getElementById("guardarRuta").type = "submit";
+      }
+  });
   document.getElementById('devolverALugaresGenerales').addEventListener('click', devolverALugaresGenerales);
   document.getElementById('opcionDeOptimizacion').addEventListener('click', function () { optimizarRuta(optimizacion);});
 }
@@ -89,6 +97,7 @@ function initMap() {
 function calculateAndDisplayRoute(directionsService, directionsDisplay, optimizacion) {
     var waypts = [];
     botonGuardarRuta = document.getElementById('guardarRuta');
+    botonGuardarRuta.name = "guardarRuta";
     botonGuardarRuta.value = "";
     botonGuardarRuta.value = document.getElementById('start').value;
     botonGuardarRuta.value += '/' + document.getElementById('end').value;

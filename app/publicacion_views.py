@@ -19,27 +19,27 @@ from app.comentario_form import comentarioPublicacionForm
 
 #Vistas
 
+#Nueva publicacion
 def publicacion_detail(request,pk):
     pub = get_object_or_404(Publicacion,pk = pk)
     com = Comentario_Publicacion.objects.filter(ID_Publicacion = pub)
-
-    if 'PublicarP' in request.POST:
-        pub.publicar()
-        pub.save()
+    form  =  comentarioPublicacionForm()
 
     if request.method == "POST":
-        form = comentarioPublicacionForm(request.POST)
-        if form.is_valid():
-            com_o = form.save(commit = False)
-            com_o.ID_Publicacion = pub
-            com_o.ID_usuario = request.user
-            com_o.Fecha_publicacion = datetime.now()
-            com_o.save()
-            return redirect('pub_detail',pk=pub.pk)
-    else:
-        form = comentarioPublicacionForm()
-        
+        com_o = form.save(commit = False)
+        com_o.ID_Publicacion = pub
+        com_o.ID_usuario = request.user
+        com_o.Fecha_publicacion = datetime.now()
+        com_o.save()
+        return redirect('pub_detail',pk=pub.pk) 
 
+    elif 'PublicarP' in request.POST:
+        pub.publicar()
+        pub.save()
+    
+    
+
+    
     return render(
         request,
         'app/publicacion_detail.html',
@@ -52,7 +52,6 @@ def publicacion_detail(request,pk):
             'coms' : com,
         })
     )
-
 
 
 def pub_new(request):
