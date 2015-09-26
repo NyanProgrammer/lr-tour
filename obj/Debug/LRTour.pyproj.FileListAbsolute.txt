@@ -37,3 +37,16 @@ C:\Users\jonas\Desktop\new\lr-tour\LRTour\bin\Microsoft.PythonTools.AzureSetup.e
 C:\Users\jonas\Desktop\new\lr-tour\LRTour\bin\wfastcgi.py
 C:\Users\jonas\Desktop\new\lr-tour\LRTour\obj\Debug\web.config
 C:\Users\jonas\Desktop\new\lr-tour\LRTour\obj\Debug\web.debug.config
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\bin\Microsoft.PythonTools.WebRole.dll
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\obj\Debug\attach_server.py
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\obj\Debug\visualstudio_py_debugger.py
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\obj\Debug\visualstudio_py_repl.py
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\obj\Debug\visualstudio_py_util.py
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\obj\Debug\__init__.py
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\obj\Debug\__main__.py
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\bin\AzureSetup.cfg
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\bin\Microsoft.PythonTools.AzureSetup.exe
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\bin\Microsoft.PythonTools.AzureSetup.exe.config
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\bin\wfastcgi.py
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\obj\Debug\web.config
+C:\Users\jonas\Desktop\banana\lr-tour\LRTour\obj\Debug\web.debug.config
